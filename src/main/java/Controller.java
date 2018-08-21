@@ -4,35 +4,28 @@ import static spark.Spark.get;
 
 import spark.ModelAndView;
 import spark.template.velocity.VelocityTemplateEngine;
-//
-import java.util.ArrayList;
+
 import java.util.HashMap;
-import java.util.Map;
+
 
 public class Controller {
 
     public static void main(String[] args) {
         VelocityTemplateEngine velocityTemplateEngine = new VelocityTemplateEngine();
 
-        ArrayList<String> students = new ArrayList<String>();
-        ArrayList<String> randomStudentName = new ArrayList<String>();
-        randomStudentName.add(Cohort.getRandomStudentName());
-        ArrayList<String> randomStudentPair = new ArrayList<String>();
-        randomStudentPair.add(Cohort.getRandomStudentPair());
+        Cohort cohort = new Cohort();
 
         get("/random_name", (req, res) -> {
-            Cohort cohort = new Cohort();
-            ArrayList<String> name = cohort.getRandomStudentName();
-            Map<String, Object> model = new HashMap<>();
-            model.put("name", randomStudentName);
+            HashMap<String, Object> model = new HashMap<>();
+            model.put("randomStudentName", cohort.shuffleStudents());
+            model.put("template", "randomName.vtl");
             return new ModelAndView(model, "randomName.vtl");
         }, velocityTemplateEngine);
 
         get("/random_pair", (req, res) -> {
-            Cohort cohort = new Cohort();
-            ArrayList<String> pair = cohort.getRandomStudentPair();
-            Map<String, Object> model = new HashMap<>();
-            model.put("name", randomStudentPair);
+            HashMap<String, Object> model = new HashMap<>();
+            model.put("randomStudentPair", cohort.shuffleStudentPairs());
+            model.put("template", "randomPair.vtl");
             return new ModelAndView(model, "randomPair.vtl");
         }, velocityTemplateEngine);
     }
